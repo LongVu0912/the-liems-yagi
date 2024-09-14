@@ -1,0 +1,35 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+/express_version/frontend/node_modules
+/express_version/frontend/dist
+/express_version/frontend/package-lock.json
+/express_version/frontend/.vscode
+/express_version/frontend/src-tauri/target
+
+/express_version/backend/node_modules
+/express_version/backend/dist
+/express_version/backend/package-lock.json
+/express_version/backend/.vscode
