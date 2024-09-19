@@ -1,6 +1,6 @@
 # The Liems Yagi
 
-Dữ liệu sao kê từ MTTQ từ ngày 10/09/2024 -> 12/09/2024
+Dữ liệu sao kê từ MTTQ VCB 001100 từ ngày 01/09/2024 -> 13/09/2024
 
 ## Setup
 

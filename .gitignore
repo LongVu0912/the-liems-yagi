@@ -1,6 +1,5 @@
 # Nuxt dev/build outputs
 .output
-.data
 .nuxt
 .nitro
 .cache
@@ -23,13 +22,4 @@ logs
 .env.*
 !.env.example
 
-/express_version/frontend/node_modules
-/express_version/frontend/dist
-/express_version/frontend/package-lock.json
-/express_version/frontend/.vscode
-/express_version/frontend/src-tauri/target
-
-/express_version/backend/node_modules
-/express_version/backend/dist
-/express_version/backend/package-lock.json
-/express_version/backend/.vscode
+tmp/db.sqlite3

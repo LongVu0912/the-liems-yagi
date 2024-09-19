@@ -1,8 +1,8 @@
-import { SqlLiteUtils } from "~/utils/SqliteUtils";
+const { dbMode } = useRuntimeConfig();
 
-const sqliteUtils = SqlLiteUtils();
+const sqlUtils = dbMode == 'postgres' ? PostgresUtils() : SqlLiteUtils();
 
 export default defineEventHandler(async (event) => {
-    const data = await sqliteUtils.countTotalCredit();
+    const data = await sqlUtils.countTotalCredit();
     return data;
 });

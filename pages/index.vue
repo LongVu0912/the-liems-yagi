@@ -18,23 +18,25 @@ const isLoading = ref(true);
 
 const columns = [
     {
-        key: 'trans_no',
+        key: 'no',
         label: 'No',
-        class: 'w-20'
+        class: 'max-sm:hidden',
+        rowClass: 'max-sm:hidden'
     },
     {
         key: 'date_time',
         label: 'Ngày',
-        class: 'w-24'
+        class: 'md:w-24'
     },
     {
         key: 'credit',
         label: 'Số tiền',
-        class: 'w-24'
+        class: 'md:w-24'
     },
     {
         key: 'detail',
-        label: 'Nội dung'
+        label: 'Nội dung',
+        rowClass: 'break-all'
     },
 ]
 
@@ -78,53 +80,49 @@ watch([page, size], () => {
     fetchData();
 });
 
-watch([search, creditRange], () => {
-    page.value = 1;
-    debouncedFetchData();
-});
-
-const clearData = () => {
-    search.value = "";
-    creditRange.from = 0;
-    creditRange.to = 0;
-    fetchData();
+const formatDate = (date: string) => {
+    const [day, month, year]: string[] = date.split('/');
+    const formattedDate = new Date(Number(year), Number(month) - 1, Number(day));
+    return formattedDate.toLocaleDateString();
 };
 </script>
 
 <template>
-    <div class="mx-2 md:mx-32">
-        <div class="flex items-center justify-between px-2 py-3.5">
+    <div class="mx-2 pb-4 md:mx-32">
+        <div class="flex items-center justify-between py-3.5">
             <div class="flex flex-col gap-2">
-                <UInput v-model="search" placeholder="Tìm nội dung..."
-                        :ui="{ icon: { trailing: { pointer: 'pointer-events-auto' } } }">
-                    <template #trailing>
-                        <UButton icon="material-symbols:delete-sweep-outline" color="primary"
-                                 class="-me-2.5 rounded-none rounded-r-md" @click="clearData" />
-                    </template>
-                </UInput>
-                <div class="flex flex-row gap-2">
-                    <div class="flex flex-row items-center gap-2">
-                        <div>Từ</div>
-                        <UInput v-model="creditRange.from">
-                            <template #trailing>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">VND</span>
-                            </template>
-                        </UInput>
+                <UForm :state="creditRange" @submit.prevent="fetchData">
+                    <UInput v-model="search" placeholder="Tìm nội dung..."
+                            :ui="{ icon: { trailing: { pointer: 'pointer-events-auto' } } }">
+                        <template #trailing>
+                            <UButton icon="heroicons:magnifying-glass-16-solid" color="primary"
+                                     class="-me-2.5 rounded-none rounded-r-md" type="submit" />
+                        </template>
+                    </UInput>
+                    <div class="mt-2 flex flex-row gap-2">
+                        <div class="flex flex-row items-center gap-2">
+                            <div>Từ</div>
+                            <UInput v-model="creditRange.from">
+                                <template #trailing>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">VND</span>
+                                </template>
+                            </UInput>
+                        </div>
+                        <div class="flex flex-row items-center gap-2">
+                            <div>Đến</div>
+                            <UInput v-model="creditRange.to">
+                                <template #trailing>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">VND</span>
+                                </template>
+                            </UInput>
+                        </div>
                     </div>
-                    <div class="flex flex-row items-center gap-2">
-                        <div>Đến</div>
-                        <UInput v-model="creditRange.to">
-                            <template #trailing>
-                                <span class="text-xs text-gray-500 dark:text-gray-400">VND</span>
-                            </template>
-                        </UInput>
-                    </div>
-                </div>
+                </UForm>
             </div>
 
-            <div class="flex flex-row items-center justify-center">
-                <div class="mr-2 hidden md:flex">Giao dịch mỗi trang:</div>
-                <USelect class="mr-2" v-model="size" :options="[5, 6, 7, 8, 9, 10]" />
+            <div class="ml-4 flex flex-shrink-0 flex-row items-center justify-center gap-2">
+                <div class="hidden md:flex">Giao dịch mỗi trang:</div>
+                <USelect v-model="size" :options="[5, 6, 7, 8, 9, 10]" />
             </div>
         </div>
 
@@ -132,15 +130,15 @@ const clearData = () => {
                 :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
                 :progress="{ color: 'primary', animation: 'carousel' }" :rows="transactions" :columns="columns"
                 :ui="{ strategy: 'override' }" :td="{ padding: 'p-2' }">
-            <template #trans_no-data="{ row }">
+            <template #no-data="{ row }">
                 <div class="font-bold">
-                    {{ row.trans_no }}
+                    {{ row.no }}
                 </div>
             </template>
 
             <template #date_time-data="{ row }">
                 <div>
-                    {{ row.date_time.substring(0, 10) }}
+                    {{ row.date_time }}
                 </div>
             </template>
 
@@ -155,8 +153,12 @@ const clearData = () => {
             </template>
         </UTable>
 
-        <div class="flex justify-between p-2">
-            <div><b>Tổng:</b> {{ new Intl.NumberFormat().format(totalCredit) }} VNĐ</div>
+        <div class="flex justify-between pt-4">
+            <div>
+                <div class="hidden sm:flex">
+                    <b>Tổng:&nbsp;</b> {{ new Intl.NumberFormat().format(totalCredit) }} VNĐ
+                </div>
+            </div>
             <div class="flex flex-row items-center">
                 <UPagination :max="7" v-model="page" :page-count="size" :total="totalTransactions" />
             </div>

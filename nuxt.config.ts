@@ -10,4 +10,14 @@ export default defineNuxtConfig({
             pathPrefix: false,
         },
     ],
+    runtimeConfig: {
+        public: {
+            dbName: process.env.DB_NAME,
+            dbUser: process.env.DB_USER,
+            dbHost: process.env.DB_HOST,
+            dbPassword: process.env.DB_PASS,
+            dbMode: process.env.DB_MODE,
+            isSSL: process.env.IS_SSL,
+        }
+    },
 });

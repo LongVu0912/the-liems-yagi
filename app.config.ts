@@ -3,7 +3,7 @@ export default defineAppConfig({
         primary: "green",
         table: {
             td: {
-                base: "",
+                base: '',
                 color: "text-gray-900 dark:text-gray-50",
             },
         },
