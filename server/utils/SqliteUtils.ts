@@ -2,8 +2,26 @@ import type Transaction from "~/types/Transaction";
 import { createDatabase } from "db0";
 import path from "path";
 import sqlite from "db0/connectors/better-sqlite3";
+import fs from "fs";
 
-const dbPath = path.join("tmp", "db.sqlite3");
+const localPath = path.join(process.cwd(), "tmp", "db.sqlite3");
+const dbPath = path.join("/tmp", "db.sqlite3");
+
+if (!fs.existsSync("/tmp")) {
+    fs.mkdirSync("/tmp");
+}
+
+const exists = fs.existsSync(dbPath);
+
+if (!exists) {
+    fs.copyFile(localPath, dbPath, fs.constants.COPYFILE_EXCL, (err) => {
+        if (err) {
+            console.error("Error while copying file", err);
+            return;
+        }
+        console.log("Copied file from " + localPath + " to " + dbPath);
+    });
+}
 
 export const SqlLiteUtils = () => {
     const db = createDatabase(
